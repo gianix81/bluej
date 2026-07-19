@@ -1,5 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { LEFT_VIDEO, RIGHT_VIDEO } from "./data";
+import { GALLERY_IMAGES, LEFT_VIDEO, RIGHT_VIDEO } from "./data";
+
+/** Hero statico per mobile: ritratto frontale, niente video. */
+export function HeroImage() {
+  return (
+    <div
+      id="main-canvas"
+      className="pointer-events-none fixed inset-0 overflow-hidden"
+      style={{ zIndex: 0 }}
+    >
+      <img
+        src={GALLERY_IMAGES[0]}
+        alt="blue•j — collezione donna"
+        draggable={false}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    </div>
+  );
+}
 
 /**
  * Two full-bleed videos, never auto-played: paused and scrubbed by the

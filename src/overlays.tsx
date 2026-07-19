@@ -93,9 +93,9 @@ export function Caption({ vp }: { vp: Viewport }) {
         zIndex: 20,
         mixBlendMode: "exclusion",
         fontWeight: 500,
-        fontSize: 12,
-        lineHeight: "140%",
-        letterSpacing: "-0.04em",
+        fontSize: vp.isMobile ? 17 : 12,
+        lineHeight: vp.isMobile ? "150%" : "140%",
+        letterSpacing: "-0.02em",
         color: "#FFFFFF",
       }}
     >
@@ -221,7 +221,7 @@ export function ProductInfo({ vp }: { vp: Viewport }) {
           className="uppercase"
           style={{
             fontWeight: 500,
-            fontSize: vp.isMobile ? 20 : 30,
+            fontSize: vp.isMobile ? 24 : 30,
             lineHeight: "100%",
             textAlign: "center",
             letterSpacing: "-0.04em",
