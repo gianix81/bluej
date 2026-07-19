@@ -128,9 +128,13 @@ export default function App() {
         m.el.style.transform = `scale(${scale})`;
       }
 
-      // Videos can't be seen once the panel fully covers them.
+      // L'hero scorre in parallasse (piu lento del pannello) con un
+      // leggero zoom: da la profondita alla transizione invece di farsi
+      // coprire da fermo. Nascosto del tutto oltre il primo viewport.
       if (canvas) {
         canvas.style.visibility = y > vh ? "hidden" : "visible";
+        const p = Math.min(1, y / vh);
+        canvas.style.transform = `translateY(${-p * vh * 0.45}px) scale(${1 + 0.06 * p})`;
       }
 
       // Outro: white overlay, product info slides up, "view" button scales in.
