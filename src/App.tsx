@@ -167,7 +167,7 @@ export default function App() {
       className="relative select-none bg-white"
       style={{ height: "500vh", cursor: customCursor ? "none" : "auto" }}
     >
-      <VideoCanvas vp={vp} />
+      <VideoCanvas />
 
       {/* Black gallery panel, starts one viewport below the fold */}
       <div

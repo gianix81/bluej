@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { LEFT_VIDEO, RIGHT_VIDEO } from "./data";
-import type { Viewport } from "./useViewport";
 
 /**
- * Two full-bleed videos.
- * Desktop (non-touch): paused, scrubbed by cursor X position in a RAF loop.
- * Touch devices: auto-play alternately (left first, then right, looping).
+ * Two full-bleed videos, never auto-played: paused and scrubbed by the
+ * pointer X position (mouse on desktop, finger on touch) in a RAF loop.
  */
-export function VideoCanvas({ vp }: { vp: Viewport }) {
+export function VideoCanvas() {
   const leftRef = useRef<HTMLVideoElement>(null);
   const rightRef = useRef<HTMLVideoElement>(null);
   const [loadedCount, setLoadedCount] = useState(0);
@@ -15,18 +13,21 @@ export function VideoCanvas({ vp }: { vp: Viewport }) {
 
   const markLoaded = () => setLoadedCount((n) => n + 1);
 
-  /* Desktop: cursor-scrub */
   useEffect(() => {
-    if (vp.isTouch) return;
     const left = leftRef.current;
     const right = rightRef.current;
     if (!left || !right) return;
 
-    let mouseX = window.innerWidth / 2;
+    let pointerX = window.innerWidth / 2;
     const onMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
+      pointerX = e.clientX;
+    };
+    const onTouch = (e: TouchEvent) => {
+      if (e.touches.length > 0) pointerX = e.touches[0].clientX;
     };
     window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchstart", onTouch, { passive: true });
+    window.addEventListener("touchmove", onTouch, { passive: true });
 
     // Which video is currently shown; right is visible on load.
     const activeSideRef = { current: "right" as "left" | "right" };
@@ -54,15 +55,15 @@ export function VideoCanvas({ vp }: { vp: Viewport }) {
       const width = window.innerWidth;
       const center = width / 2;
       const deadZone = Math.max(30, width * 0.05);
-      const dx = mouseX - center;
+      const dx = pointerX - center;
 
       if (Math.abs(dx) <= deadZone) {
         // Dead zone: keep whichever video was last active, parked at 0.
         const active = activeSideRef.current === "left" ? left : right;
         seekTo(active, 0);
       } else if (dx < 0) {
-        // Cursor left of center: show RIGHT video, scrub from dead-zone edge
-        // to the left screen edge.
+        // Pointer left of center: show RIGHT video, scrub from dead-zone
+        // edge to the left screen edge.
         show("right");
         const range = center - deadZone;
         const progress = Math.min(1, Math.max(0, -(dx + deadZone) / range));
@@ -70,8 +71,8 @@ export function VideoCanvas({ vp }: { vp: Viewport }) {
           seekTo(right, progress * right.duration);
         }
       } else {
-        // Cursor right of center: show LEFT video, scrub from dead-zone edge
-        // to the right screen edge.
+        // Pointer right of center: show LEFT video, scrub from dead-zone
+        // edge to the right screen edge.
         show("left");
         const range = width - (center + deadZone);
         const progress = Math.min(1, Math.max(0, (dx - deadZone) / range));
@@ -86,59 +87,21 @@ export function VideoCanvas({ vp }: { vp: Viewport }) {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchstart", onTouch);
+      window.removeEventListener("touchmove", onTouch);
     };
-  }, [vp.isTouch]);
-
-  /* Touch devices: alternate auto-play */
-  useEffect(() => {
-    if (!vp.isTouch) return;
-    const left = leftRef.current;
-    const right = rightRef.current;
-    if (!left || !right) return;
-
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const showAndPlay = (video: HTMLVideoElement, other: HTMLVideoElement) => {
-      other.pause();
-      other.style.display = "none";
-      video.style.display = "block";
-      video.currentTime = 0;
-      if (!reducedMotion) void video.play().catch(() => {});
-    };
-
-    const onLeftEnded = () => showAndPlay(right, left);
-    const onRightEnded = () => showAndPlay(left, right);
-    left.addEventListener("ended", onLeftEnded);
-    right.addEventListener("ended", onRightEnded);
-
-    showAndPlay(left, right);
-
-    return () => {
-      left.removeEventListener("ended", onLeftEnded);
-      right.removeEventListener("ended", onRightEnded);
-      left.pause();
-      right.pause();
-    };
-  }, [vp.isTouch]);
+  }, []);
 
   return (
     <div
       id="main-canvas"
-      className="pointer-events-none fixed overflow-hidden"
+      className="pointer-events-none fixed inset-0 overflow-hidden"
       style={{
         zIndex: 0,
+        width: "100%",
+        height: "100%",
         opacity: ready ? 1 : 0,
         transition: "opacity 0.3s ease",
-        ...(vp.isMobile
-          ? {
-              left: 0,
-              top: 220,
-              width: "100vw",
-              height: "calc(100vh - 220px)",
-            }
-          : { inset: 0, width: "100%", height: "100%" }),
       }}
     >
       <video
