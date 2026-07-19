@@ -8,15 +8,39 @@ import { LEFT_VIDEO, RIGHT_VIDEO } from "./data";
 export function VideoCanvas() {
   const leftRef = useRef<HTMLVideoElement>(null);
   const rightRef = useRef<HTMLVideoElement>(null);
-  const [loadedCount, setLoadedCount] = useState(0);
-  const ready = loadedCount >= 2;
+  const [ready, setReady] = useState(false);
 
-  const markLoaded = () => setLoadedCount((n) => n + 1);
+  const markLoaded = () => setReady(true);
+
+  // Fallback: mostra comunque il canvas se i browser mobile ritardano
+  // gli eventi di caricamento (senza autoplay possono non scaricare nulla).
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const left = leftRef.current;
     const right = rightRef.current;
     if (!left || !right) return;
+
+    // Primo tocco: "sblocca" i video su iOS/Android (play muto + pausa),
+    // altrimenti il seek non ha frame da mostrare.
+    let primed = false;
+    const prime = () => {
+      if (primed) return;
+      primed = true;
+      for (const v of [left, right]) {
+        v.play()
+          .then(() => {
+            v.pause();
+            v.currentTime = 0;
+          })
+          .catch(() => {});
+      }
+      window.removeEventListener("touchstart", prime);
+    };
+    window.addEventListener("touchstart", prime, { passive: true });
 
     let pointerX = window.innerWidth / 2;
     const onMove = (e: MouseEvent) => {
@@ -89,6 +113,7 @@ export function VideoCanvas() {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("touchstart", onTouch);
       window.removeEventListener("touchmove", onTouch);
+      window.removeEventListener("touchstart", prime);
     };
   }, []);
 
@@ -110,7 +135,7 @@ export function VideoCanvas() {
         muted
         playsInline
         preload="auto"
-        onLoadedData={markLoaded}
+        onLoadedMetadata={markLoaded}
         onError={markLoaded}
         className="absolute inset-0 h-full w-full object-cover"
         style={{ display: "none" }}
@@ -121,7 +146,7 @@ export function VideoCanvas() {
         muted
         playsInline
         preload="auto"
-        onLoadedData={markLoaded}
+        onLoadedMetadata={markLoaded}
         onError={markLoaded}
         className="absolute inset-0 h-full w-full object-cover"
         style={{ display: "block" }}

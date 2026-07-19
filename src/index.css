@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  /* Blocca l'auto-dark di Chrome Android: il design (mix-blend exclusion)
+     funziona solo su pagina chiara. */
+  color-scheme: only light;
+}
+
 html,
 body {
   background: #fff;
