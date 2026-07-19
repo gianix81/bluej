@@ -1,0 +1,7 @@
+node_modules
+dist
+*.local
+
+# materiale sorgente non necessario al deploy
+fileoriginali/
+assets-originali/
