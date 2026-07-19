@@ -86,15 +86,15 @@ export function Caption({ vp }: { vp: Viewport }) {
         left: vp.isMobile ? 16 : 32,
         top: vp.isDesktop ? 244 : vp.isTablet ? 180 : 118,
         width: vp.isDesktop
-          ? 692
+          ? 400
           : vp.isTablet
-            ? "calc(50vw - 48px)"
+            ? "calc(45vw - 48px)"
             : "calc(100vw - 32px)",
         zIndex: 20,
         mixBlendMode: "exclusion",
         fontWeight: 500,
-        fontSize: vp.isMobile ? 17 : 12,
-        lineHeight: vp.isMobile ? "150%" : "140%",
+        fontSize: vp.isMobile ? 17 : 16,
+        lineHeight: "150%",
         letterSpacing: "-0.02em",
         color: "#FFFFFF",
       }}
