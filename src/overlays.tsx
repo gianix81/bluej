@@ -80,6 +80,7 @@ export function Logo({ vp }: { vp: Viewport }) {
 export function Caption({ vp }: { vp: Viewport }) {
   return (
     <motion.div
+      id="hero-caption"
       {...fadeUp(0.3)}
       className="pointer-events-none fixed"
       style={{

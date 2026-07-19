@@ -48,6 +48,7 @@ export default function App() {
     const panel = document.getElementById("black-panel");
     const wrap = document.getElementById("panel-wrap");
     const overlay = document.getElementById("outro-overlay");
+    const caption = document.getElementById("hero-caption");
     const info = document.getElementById("outro-info");
     const buy = document.getElementById("outro-buy");
     const footer = document.getElementById("outro-footer");
@@ -144,6 +145,24 @@ export default function App() {
         info.style.transform = `translateY(${-offset * progress}px)`;
       }
       if (buy) buy.style.transform = `scale(${progress})`;
+
+      // Nella galleria i testi si dissolvono: non devono coprire le foto.
+      // La caption resta nascosta; le info prodotto tornano nell'outro
+      // (dove l'overlay bianco copre le immagini).
+      const galleryFade = Math.min(
+        1,
+        Math.max(0, (y - vh * 0.5) / (vh * 0.4)),
+      );
+      if (caption) {
+        caption.style.opacity =
+          galleryFade > 0 ? String(1 - galleryFade) : "";
+      }
+      if (info) {
+        info.style.opacity =
+          galleryFade > 0
+            ? String(Math.max(1 - galleryFade, progress))
+            : "";
+      }
 
       raf = requestAnimationFrame(tick);
     };
