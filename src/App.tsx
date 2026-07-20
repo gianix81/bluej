@@ -18,18 +18,21 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Scattered grid: one image per row on a staggered primary column, plus a
- * second image every 3rd row. Empty cells are -1.
+ * Griglia sparsa ma bilanciata: la colonna primaria cicla su TUTTE le
+ * colonne (niente lati sempre vuoti) e una riga su due ospita una
+ * seconda immagine sul lato opposto. Le celle vuote sono -1.
  */
 function buildLayout(count: number, cols: number): number[][] {
+  const cycle =
+    cols >= 4 ? [0, 2, 1, 3] : cols === 3 ? [0, 2, 1] : [0, 1];
   const rows: number[][] = [];
   let idx = 0;
   for (let r = 0; idx < count; r++) {
     const row = new Array<number>(cols).fill(-1);
-    const a = (r * 2 + (r % 2)) % cols;
+    const a = cycle[r % cycle.length];
     row[a] = idx++;
-    if (r % 3 === 0 && idx < count) {
-      let b = (a + 2) % cols;
+    if (r % 2 === 0 && idx < count) {
+      let b = (a + Math.max(1, Math.floor(cols / 2))) % cols;
       if (b === a) b = (a + 1) % cols;
       row[b] = idx++;
     }
@@ -60,16 +63,24 @@ export default function App() {
       panel.getElementsByClassName("bp-card"),
     ) as HTMLElement[];
 
+    const video = document.getElementById(
+      "intro-video",
+    ) as HTMLVideoElement | null;
+
     let vh = window.innerHeight;
     let maxScroll = 0;
+    // Fase intro: il video si scrubba con lo scroll prima che il
+    // pannello salga (solo dove c'è il video, non su mobile).
+    let intro = video ? window.innerHeight * 1.5 : 0;
     // Cards live inside the fixed panel, so offsetTop is relative to the
     // panel's content top — stable under our transforms (unlike rects).
     let metrics: { el: HTMLElement; top: number; height: number }[] = [];
 
     const measure = () => {
       vh = window.innerHeight;
+      intro = video ? vh * 1.5 : 0;
       maxScroll = Math.max(0, wrap.scrollHeight - vh);
-      spacer.style.height = `${vh + maxScroll + 2 * vh}px`;
+      spacer.style.height = `${intro + vh + maxScroll + 2 * vh}px`;
       metrics = cards.map((el) => ({
         el,
         top: el.offsetTop,
@@ -79,7 +90,7 @@ export default function App() {
     };
     measure();
 
-    // Phase 1: black panel slides up over the videos during the first 100vh.
+    // Dopo l'intro, il pannello nero copre l'hero in un viewport di scroll.
     const slide = gsap.fromTo(
       panel,
       { y: () => window.innerHeight },
@@ -88,8 +99,8 @@ export default function App() {
         ease: "none",
         scrollTrigger: {
           trigger: spacer,
-          start: 0,
-          end: () => window.innerHeight,
+          start: () => intro,
+          end: () => intro + window.innerHeight,
           scrub: true,
           invalidateOnRefresh: true,
         },
@@ -101,15 +112,33 @@ export default function App() {
     let raf = 0;
 
     const tick = (now: number) => {
-      const y = window.scrollY;
+      const rawY = window.scrollY;
 
       // Randomize the circle symbol while scrolling (throttled to 80ms).
-      if (symbol && y !== lastY && now - lastSymbolAt > 80) {
+      if (symbol && rawY !== lastY && now - lastSymbolAt > 80) {
         lastSymbolAt = now;
         symbol.textContent =
           CIRCLE_SYMBOLS[Math.floor(Math.random() * CIRCLE_SYMBOLS.length)];
       }
-      lastY = y;
+      lastY = rawY;
+
+      // Fase intro: lo scroll scrubba il video (avanti e indietro).
+      if (video && intro > 0) {
+        const vp = Math.min(1, Math.max(0, rawY / intro));
+        if (
+          !video.seeking &&
+          Number.isFinite(video.duration) &&
+          video.duration > 0
+        ) {
+          const t = vp * video.duration;
+          if (Math.abs(video.currentTime - t) > 0.001) {
+            video.currentTime = t;
+          }
+        }
+      }
+
+      // Le fasi successive ragionano sullo scroll DOPO l'intro.
+      const y = Math.max(0, rawY - intro);
 
       // Phase 2: once the panel is docked, its content scrolls up instead.
       const panelOffset = Math.max(0, vh - y);

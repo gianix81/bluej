@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { GALLERY_IMAGES, LEFT_VIDEO, RIGHT_VIDEO } from "./data";
+import { GALLERY_IMAGES, INTRO_VIDEO } from "./data";
 
 /** Hero statico per mobile: ritratto frontale, niente video. */
 export function HeroImage() {
@@ -20,119 +20,40 @@ export function HeroImage() {
 }
 
 /**
- * Two full-bleed videos, never auto-played: paused and scrubbed by the
- * pointer X position (mouse on desktop, finger on touch) in a RAF loop.
+ * Video hero a tutto schermo, mai in autoplay: il currentTime viene
+ * guidato dallo scroll (dal RAF in App) tramite l'id "intro-video".
  */
 export function VideoCanvas() {
-  const leftRef = useRef<HTMLVideoElement>(null);
-  const rightRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
 
-  const markLoaded = () => setReady(true);
-
-  // Fallback: mostra comunque il canvas se i browser mobile ritardano
-  // gli eventi di caricamento (senza autoplay possono non scaricare nulla).
+  // Fallback: mostra comunque il canvas se i browser ritardano gli
+  // eventi di caricamento.
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 1200);
     return () => clearTimeout(t);
   }, []);
 
+  // Primo tocco: "sblocca" i frame del video su touch (play muto +
+  // pausa), altrimenti il seek non ha nulla da mostrare.
   useEffect(() => {
-    const left = leftRef.current;
-    const right = rightRef.current;
-    if (!left || !right) return;
-
-    // Primo tocco: "sblocca" i video su iOS/Android (play muto + pausa),
-    // altrimenti il seek non ha frame da mostrare.
+    const video = videoRef.current;
+    if (!video) return;
     let primed = false;
     const prime = () => {
       if (primed) return;
       primed = true;
-      for (const v of [left, right]) {
-        v.play()
-          .then(() => {
-            v.pause();
-            v.currentTime = 0;
-          })
-          .catch(() => {});
-      }
+      video
+        .play()
+        .then(() => {
+          video.pause();
+          video.currentTime = 0;
+        })
+        .catch(() => {});
       window.removeEventListener("touchstart", prime);
     };
     window.addEventListener("touchstart", prime, { passive: true });
-
-    let pointerX = window.innerWidth / 2;
-    const onMove = (e: MouseEvent) => {
-      pointerX = e.clientX;
-    };
-    const onTouch = (e: TouchEvent) => {
-      if (e.touches.length > 0) pointerX = e.touches[0].clientX;
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchstart", onTouch, { passive: true });
-    window.addEventListener("touchmove", onTouch, { passive: true });
-
-    // Which video is currently shown; right is visible on load.
-    const activeSideRef = { current: "right" as "left" | "right" };
-    left.style.display = "none";
-    right.style.display = "block";
-
-    const show = (side: "left" | "right") => {
-      if (activeSideRef.current === side) return;
-      activeSideRef.current = side;
-      left.style.display = side === "left" ? "block" : "none";
-      right.style.display = side === "right" ? "block" : "none";
-    };
-
-    const seekTo = (video: HTMLVideoElement, time: number) => {
-      // Wait for the previous seek to finish rendering before requesting a
-      // new one, otherwise playback gets jittery.
-      if (video.seeking) return;
-      if (!Number.isFinite(video.duration) || video.duration === 0) return;
-      if (Math.abs(video.currentTime - time) < 0.001) return;
-      video.currentTime = time;
-    };
-
-    let raf = 0;
-    const tick = () => {
-      const width = window.innerWidth;
-      const center = width / 2;
-      const deadZone = Math.max(30, width * 0.05);
-      const dx = pointerX - center;
-
-      if (Math.abs(dx) <= deadZone) {
-        // Dead zone: keep whichever video was last active, parked at 0.
-        const active = activeSideRef.current === "left" ? left : right;
-        seekTo(active, 0);
-      } else if (dx < 0) {
-        // Pointer left of center: show RIGHT video, scrub from dead-zone
-        // edge to the left screen edge.
-        show("right");
-        const range = center - deadZone;
-        const progress = Math.min(1, Math.max(0, -(dx + deadZone) / range));
-        if (Number.isFinite(right.duration)) {
-          seekTo(right, progress * right.duration);
-        }
-      } else {
-        // Pointer right of center: show LEFT video, scrub from dead-zone
-        // edge to the right screen edge.
-        show("left");
-        const range = width - (center + deadZone);
-        const progress = Math.min(1, Math.max(0, (dx - deadZone) / range));
-        if (Number.isFinite(left.duration)) {
-          seekTo(left, progress * left.duration);
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("touchstart", onTouch);
-      window.removeEventListener("touchmove", onTouch);
-      window.removeEventListener("touchstart", prime);
-    };
+    return () => window.removeEventListener("touchstart", prime);
   }, []);
 
   return (
@@ -148,26 +69,15 @@ export function VideoCanvas() {
       }}
     >
       <video
-        ref={leftRef}
-        src={LEFT_VIDEO}
+        id="intro-video"
+        ref={videoRef}
+        src={INTRO_VIDEO}
         muted
         playsInline
         preload="auto"
-        onLoadedMetadata={markLoaded}
-        onError={markLoaded}
+        onLoadedMetadata={() => setReady(true)}
+        onError={() => setReady(true)}
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ display: "none" }}
-      />
-      <video
-        ref={rightRef}
-        src={RIGHT_VIDEO}
-        muted
-        playsInline
-        preload="auto"
-        onLoadedMetadata={markLoaded}
-        onError={markLoaded}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ display: "block" }}
       />
     </div>
   );

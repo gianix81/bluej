@@ -1,9 +1,6 @@
-// Video locali della modella: "rotazione a destra" è il video scrubbato
-// col cursore a destra (slot LEFT), "rotazione a sinistra" quello col
-// cursore a sinistra (slot RIGHT, visibile all'avvio).
-export const LEFT_VIDEO = "/media/video-left.mp4";
-
-export const RIGHT_VIDEO = "/media/video-right.mp4";
+// Video hero: scrubbato dallo scroll nella fase iniziale (desktop/tablet).
+// Ricodificato con keyframe fitti per il seek fluido in both directions.
+export const INTRO_VIDEO = "/media/video-intro.mp4";
 
 export const GALLERY_IMAGES = [
   "/media/galleria-01.webp",
@@ -16,6 +13,7 @@ export const GALLERY_IMAGES = [
   "/media/galleria-08.webp",
   "/media/galleria-09.webp",
   "/media/galleria-10.webp",
+  "/media/galleria-11.webp",
 ];
 
 // WooCommerce su bluej.gengioia.it (stessa cartella della landing).
