@@ -24,9 +24,26 @@ gsap.registerPlugin(ScrollTrigger);
  * in righe consecutive. Le celle vuote sono -1.
  */
 const ROW_PATTERNS: Record<number, number[][]> = {
-  4: [[0, 2], [3], [1], [0, 3], [2], [1]],
-  3: [[0, 2], [1], [2, 0], [1]],
-  2: [[0, 1], [0], [1, 0], [1]],
+  // Righe piene con un solo vuoto che ruota di posizione: la parete
+  // resta ricca, il nero è solo un accento.
+  4: [
+    [0, 1, 2],
+    [3, 0, 1],
+    [2, 3, 0],
+    [1, 2, 3],
+  ],
+  3: [
+    [0, 1, 2],
+    [1, 2],
+    [0, 1, 2],
+    [0, 1],
+  ],
+  2: [
+    [0, 1],
+    [0],
+    [0, 1],
+    [1],
+  ],
 };
 
 function buildLayout(count: number, cols: number): number[][] {
@@ -231,7 +248,7 @@ export default function App() {
       >
         <div
           id="panel-wrap"
-          style={{ width: "100%", paddingTop: "min(400px, 40vh)" }}
+          style={{ width: "100%", paddingTop: "min(260px, 26vh)" }}
         >
           {rows.map((row, r) => (
             <div
