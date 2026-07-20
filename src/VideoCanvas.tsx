@@ -1,23 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { GALLERY_IMAGES, INTRO_VIDEO } from "./data";
-
-/** Hero statico per mobile: ritratto frontale, niente video. */
-export function HeroImage() {
-  return (
-    <div
-      id="main-canvas"
-      className="pointer-events-none fixed inset-0 overflow-hidden"
-      style={{ zIndex: 0 }}
-    >
-      <img
-        src={GALLERY_IMAGES[0]}
-        alt="blue•j — collezione donna"
-        draggable={false}
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-    </div>
-  );
-}
+import { INTRO_VIDEO } from "./data";
 
 /**
  * Video hero a tutto schermo in autoplay muto e loop: scorre fluido da

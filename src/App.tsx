@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CIRCLE_SYMBOLS, GALLERY_IMAGES } from "./data";
 import { useViewport } from "./useViewport";
-import { HeroImage, VideoCanvas } from "./VideoCanvas";
+import { VideoCanvas } from "./VideoCanvas";
 import {
   BrandSections,
   Caption,
@@ -212,7 +212,7 @@ export default function App() {
       className="relative select-none bg-white"
       style={{ height: "500vh", cursor: customCursor ? "none" : "auto" }}
     >
-      {vp.isMobile ? <HeroImage /> : <VideoCanvas />}
+      <VideoCanvas />
 
       {/* Black gallery panel, starts one viewport below the fold */}
       <div
