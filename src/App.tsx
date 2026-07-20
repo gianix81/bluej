@@ -5,6 +5,7 @@ import { CIRCLE_SYMBOLS, GALLERY_IMAGES } from "./data";
 import { useViewport } from "./useViewport";
 import { HeroImage, VideoCanvas } from "./VideoCanvas";
 import {
+  BrandSections,
   Caption,
   CustomCursor,
   HeaderNav,
@@ -262,6 +263,7 @@ export default function App() {
               )}
             </div>
           ))}
+          <BrandSections vp={vp} />
         </div>
       </div>
 

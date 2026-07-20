@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { CAPTION_TEXT, CART_URL, SHOP_URL } from "./data";
+import { BRANDS, CAPTION_TEXT, CART_URL, SHOP_URL } from "./data";
 import type { Viewport } from "./useViewport";
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
@@ -164,91 +164,110 @@ export function HeaderNav({ vp }: { vp: Viewport }) {
 /* ---------------------------------- 1E. Product info ---------------------------------- */
 
 export function ProductInfo({ vp }: { vp: Viewport }) {
-  const circleSize = vp.isMobile ? 20 : 30;
-
   return (
     <motion.div
       id="outro-info"
-      data-outro-offset={vp.isMobile ? 132 : 166}
+      data-outro-offset={vp.isMobile ? 132 : 0}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE, delay: 0.45 }}
-      className="pointer-events-none fixed flex flex-col items-center"
+      className="pointer-events-none fixed flex flex-col items-start"
       style={{
         zIndex: 20,
         mixBlendMode: "exclusion",
-        ...(vp.isMobile
-          ? { left: 0, right: 0, bottom: 48 }
-          : { right: 32, bottom: 80, width: 330 }),
+        left: vp.isMobile ? 16 : 32,
+        bottom: vp.isMobile ? 48 : 80,
       }}
     >
       <div
-        className="flex flex-col items-start"
-        style={{
-          width: vp.isMobile ? 252 : "100%",
-          marginBottom: vp.isMobile ? 12 : 32,
-        }}
-      >
-        <div
-          className="relative"
-          style={{ width: circleSize, height: circleSize }}
-        >
-          <svg
-            width={circleSize}
-            height={circleSize}
-            viewBox="0 0 40 40"
-            fill="none"
-          >
-            <circle
-              cx={20}
-              cy={20}
-              r={18.75}
-              stroke="#fff"
-              strokeWidth={vp.isMobile ? 2 : 2.5}
-            />
-          </svg>
-          <span
-            id="circle-symbol"
-            className="absolute inset-0 flex items-center justify-center uppercase"
-            style={{
-              fontWeight: 500,
-              fontSize: vp.isMobile ? 10 : 15,
-              letterSpacing: "-0.04em",
-              color: "#fff",
-            }}
-          >
-            8
-          </span>
-        </div>
-        <div
-          className="uppercase"
-          style={{
-            fontWeight: 500,
-            fontSize: vp.isMobile ? 24 : 30,
-            lineHeight: "100%",
-            textAlign: "center",
-            letterSpacing: "-0.04em",
-            color: "#fff",
-          }}
-        >
-          Collezione donna
-          <br />
-          "Potenza"
-        </div>
-      </div>
-      <div
+        className="uppercase"
         style={{
           fontWeight: 500,
-          fontSize: vp.isMobile ? 60 : 80,
-          lineHeight: "100%",
-          textAlign: "center",
+          fontSize: vp.isMobile ? 24 : 30,
+          lineHeight: "110%",
           letterSpacing: "-0.04em",
           color: "#fff",
         }}
       >
-        €149,00
+        Collezione donna
+        <br />
+        "Potenza"
       </div>
     </motion.div>
+  );
+}
+
+/** Sezioni dedicate alle quattro linee, in coda alla galleria. */
+export function BrandSections({ vp }: { vp: Viewport }) {
+  return (
+    <div
+      style={{
+        padding: vp.isMobile ? "80px 16px 120px" : "140px 32px 180px",
+        color: "#fff",
+      }}
+    >
+      <div
+        className="uppercase"
+        style={{
+          fontWeight: 500,
+          fontSize: 13,
+          letterSpacing: "0.12em",
+          opacity: 0.6,
+          marginBottom: vp.isMobile ? 32 : 48,
+        }}
+      >
+        Le nostre linee
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: vp.isMobile ? "1fr" : "1fr 1fr",
+          gap: vp.isMobile ? "56px" : "88px 64px",
+        }}
+      >
+        {BRANDS.map((brand) => (
+          <a
+            key={brand.name}
+            href={brand.url}
+            style={{ color: "#fff", textDecoration: "none" }}
+          >
+            <div
+              style={{
+                fontWeight: 600,
+                fontSize: vp.isMobile ? 34 : 48,
+                letterSpacing: "-0.04em",
+                lineHeight: "100%",
+                marginBottom: 14,
+              }}
+            >
+              {brand.name}
+            </div>
+            <div
+              style={{
+                fontWeight: 500,
+                fontSize: 15,
+                lineHeight: "150%",
+                opacity: 0.75,
+                maxWidth: 420,
+                marginBottom: 14,
+              }}
+            >
+              {brand.copy}
+            </div>
+            <div
+              style={{
+                fontWeight: 500,
+                fontSize: 14,
+                textDecoration: "underline",
+                textUnderlineOffset: 4,
+              }}
+            >
+              Scopri la linea →
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
   );
 }
 
