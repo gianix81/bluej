@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { CAPTION_TEXT, SHOP_URL } from "./data";
+import { CAPTION_TEXT, CART_URL, SHOP_URL } from "./data";
 import type { Viewport } from "./useViewport";
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
@@ -146,12 +146,12 @@ export function HeaderNav({ vp }: { vp: Viewport }) {
           <path d="M0 26H40" stroke="#fff" strokeWidth={2.5} />
         </svg>
         <a
-          href={SHOP_URL || undefined}
+          href={CART_URL || undefined}
           style={{
             fontWeight: 500,
             fontSize: vp.isMobile ? 13 : 15,
             color: "#fff",
-            pointerEvents: SHOP_URL ? "auto" : "none",
+            pointerEvents: CART_URL ? "auto" : "none",
           }}
         >
           [ CARRELLO ]

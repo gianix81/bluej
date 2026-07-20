@@ -18,9 +18,9 @@ export const GALLERY_IMAGES = [
   "/media/galleria-10.webp",
 ];
 
-// URL del negozio (WooCommerce): quando il negozio e online basta
-// sostituire questo valore, es. "https://shop.blue-j.it".
-export const SHOP_URL = "";
+// WooCommerce su bluej.gengioia.it (stessa cartella della landing).
+export const SHOP_URL = "https://bluej.gengioia.it/negozio/";
+export const CART_URL = "https://bluej.gengioia.it/carrello/";
 
 export const CIRCLE_SYMBOLS = ["8", "$", "^^", "%", "/"];
 
