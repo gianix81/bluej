@@ -234,11 +234,7 @@ export function Lookbook({
           <img src={GALLERY_IMAGES[1]} alt="" draggable={false} />
           <div className="lb-cover-veil" />
           <div className="lb-cover-text">
-            <img
-              src="/media/logo.png"
-              alt="blue•j"
-              style={{ width: 150, filter: "invert(1)" }}
-            />
+            <div className="lb-cover-brand">blue•j</div>
             <div className="lb-cover-title">Catalogo</div>
             <div className="lb-cover-sub">
               {activeBrand || "tutte le linee"} — {total || "…"} capi

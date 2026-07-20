@@ -285,6 +285,14 @@ body {
   color: #fff;
 }
 
+.lb-cover-brand {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
 .lb-cover-title {
   font-size: 44px;
   font-weight: 600;
@@ -310,7 +318,7 @@ body {
 @media (max-width: 1023px) {
   .lb-book {
     width: min(560px, calc(100vw - 20px));
-    height: min(600px, 66vh);
+    height: min(600px, 64vh);
   }
 
   .lb-arrow {
@@ -319,7 +327,61 @@ body {
   }
 
   .lb-stage {
-    padding: 0 12px;
+    padding: 0 2px;
+    gap: 2px;
+  }
+
+  .lb-topbar {
+    padding: 14px 16px 8px;
+  }
+
+  /* Filtri compatti: griglia a due colonne, ricerca a tutta riga. */
+  .lb-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0 16px 10px;
+  }
+
+  .lb-filters select,
+  .lb-filters input {
+    max-width: none;
+    width: 100%;
+    font-size: 13px;
+    padding: 7px 8px;
+  }
+
+  .lb-filters form {
+    grid-column: 1 / -1;
+  }
+
+  .lb-count {
+    display: none;
+  }
+
+  .lb-page {
+    padding: 18px 18px 32px;
+  }
+
+  .lb-page-head {
+    margin-bottom: 8px;
+  }
+
+  .lb-item {
+    padding: 10px 0;
+  }
+
+  .lb-item-name {
+    font-size: 14.5px;
+  }
+
+  .lb-cover-title {
+    font-size: 34px;
+  }
+
+  .lb-footer {
+    padding: 6px 12px 12px;
+    font-size: 11px;
   }
 }
 
