@@ -12,6 +12,15 @@ body {
   font-family: "Inter Tight", sans-serif;
 }
 
+/* Il video hero è orizzontale con la modella sul lato sinistro del
+   fotogramma: sugli schermi stretti il ritaglio va ancorato lì,
+   altrimenti resta in vista solo la parete vuota. */
+@media (max-width: 639px) {
+  #main-canvas video {
+    object-position: 24% 50%;
+  }
+}
+
 .bp-card {
   will-change: transform;
 }
