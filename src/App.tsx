@@ -19,23 +19,24 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Griglia sparsa ma bilanciata: la colonna primaria cicla su TUTTE le
- * colonne (niente lati sempre vuoti) e una riga su due ospita una
- * seconda immagine sul lato opposto. Le celle vuote sono -1.
+ * Griglia sparsa con pattern fissi per numero di colonne: ogni colonna
+ * riceve lo stesso numero di foto nel ciclo e nessuna colonna si ripete
+ * in righe consecutive. Le celle vuote sono -1.
  */
+const ROW_PATTERNS: Record<number, number[][]> = {
+  4: [[0, 2], [3], [1], [0, 3], [2], [1]],
+  3: [[0, 2], [1], [2, 0], [1]],
+  2: [[0, 1], [0], [1, 0], [1]],
+};
+
 function buildLayout(count: number, cols: number): number[][] {
-  const cycle =
-    cols >= 4 ? [0, 2, 1, 3] : cols === 3 ? [0, 2, 1] : [0, 1];
+  const pattern = ROW_PATTERNS[cols] ?? ROW_PATTERNS[4];
   const rows: number[][] = [];
   let idx = 0;
   for (let r = 0; idx < count; r++) {
     const row = new Array<number>(cols).fill(-1);
-    const a = cycle[r % cycle.length];
-    row[a] = idx++;
-    if (r % 2 === 0 && idx < count) {
-      let b = (a + Math.max(1, Math.floor(cols / 2))) % cols;
-      if (b === a) b = (a + 1) % cols;
-      row[b] = idx++;
+    for (const c of pattern[r % pattern.length]) {
+      if (idx < count) row[c] = idx++;
     }
     rows.push(row);
   }
