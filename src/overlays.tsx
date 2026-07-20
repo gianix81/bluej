@@ -84,7 +84,7 @@ export function Caption({ vp }: { vp: Viewport }) {
       {...fadeUp(0.3)}
       className="pointer-events-none fixed"
       style={{
-        left: vp.isMobile ? 16 : 32,
+        right: vp.isMobile ? 16 : 32,
         top: vp.isDesktop ? 244 : vp.isTablet ? 180 : 118,
         width: vp.isDesktop
           ? 400
@@ -98,6 +98,7 @@ export function Caption({ vp }: { vp: Viewport }) {
         lineHeight: "150%",
         letterSpacing: "-0.02em",
         color: "#FFFFFF",
+        textAlign: "right",
       }}
     >
       {CAPTION_TEXT}
@@ -167,15 +168,15 @@ export function ProductInfo({ vp }: { vp: Viewport }) {
   return (
     <motion.div
       id="outro-info"
-      data-outro-offset={vp.isMobile ? 132 : 0}
+      data-outro-offset={vp.isMobile ? 132 : 166}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE, delay: 0.45 }}
-      className="pointer-events-none fixed flex flex-col items-start"
+      className="pointer-events-none fixed flex flex-col items-end"
       style={{
         zIndex: 20,
         mixBlendMode: "exclusion",
-        left: vp.isMobile ? 16 : 32,
+        right: vp.isMobile ? 16 : 32,
         bottom: vp.isMobile ? 48 : 80,
       }}
     >
@@ -187,6 +188,7 @@ export function ProductInfo({ vp }: { vp: Viewport }) {
           lineHeight: "110%",
           letterSpacing: "-0.04em",
           color: "#fff",
+          textAlign: "right",
         }}
       >
         Collezione donna
