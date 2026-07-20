@@ -85,17 +85,21 @@ export function Caption({ vp }: { vp: Viewport }) {
       className="pointer-events-none fixed"
       style={{
         right: vp.isMobile ? 16 : 32,
-        top: vp.isDesktop ? 244 : vp.isTablet ? 180 : 118,
+        // Su mobile sta in basso, sotto il viso della modella; su
+        // desktop/tablet resta sotto la nav.
+        ...(vp.isMobile
+          ? { bottom: 200, left: 16 }
+          : { top: vp.isDesktop ? 244 : 180 }),
         width: vp.isDesktop
           ? 400
           : vp.isTablet
             ? "calc(45vw - 48px)"
-            : "calc(100vw - 32px)",
+            : undefined,
         zIndex: 20,
         mixBlendMode: "exclusion",
         fontWeight: 500,
-        fontSize: vp.isMobile ? 17 : 16,
-        lineHeight: "150%",
+        fontSize: vp.isMobile ? 19 : 16,
+        lineHeight: vp.isMobile ? "160%" : "150%",
         letterSpacing: "-0.02em",
         color: "#FFFFFF",
         textAlign: "right",
