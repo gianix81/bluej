@@ -112,7 +112,13 @@ export function Caption({ vp }: { vp: Viewport }) {
 
 /* ---------------------------------- 1D. Header navigation ---------------------------------- */
 
-export function HeaderNav({ vp }: { vp: Viewport }) {
+export function HeaderNav({
+  vp,
+  onCatalog,
+}: {
+  vp: Viewport;
+  onCatalog: () => void;
+}) {
   const inset = vp.isMobile ? 16 : 32;
   const iconSize = vp.isMobile ? 24 : 30;
 
@@ -150,6 +156,23 @@ export function HeaderNav({ vp }: { vp: Viewport }) {
           <path d="M0 14H40" stroke="#fff" strokeWidth={2.5} />
           <path d="M0 26H40" stroke="#fff" strokeWidth={2.5} />
         </svg>
+        <button
+          onClick={onCatalog}
+          className="uppercase"
+          style={{
+            font: "inherit",
+            fontWeight: 500,
+            fontSize: vp.isMobile ? 13 : 15,
+            color: "#fff",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            pointerEvents: "auto",
+            padding: 0,
+          }}
+        >
+          Catalogo
+        </button>
         <a
           href={CART_URL || undefined}
           style={{

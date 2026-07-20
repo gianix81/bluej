@@ -1,9 +1,10 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CIRCLE_SYMBOLS, GALLERY_IMAGES } from "./data";
 import { useViewport } from "./useViewport";
 import { VideoCanvas } from "./VideoCanvas";
+import { Lookbook } from "./Lookbook";
 import {
   BrandSections,
   Caption,
@@ -64,6 +65,7 @@ export default function App() {
   const vp = useViewport();
   const cols = vp.isMobile ? 2 : vp.isTablet ? 3 : 4;
   const rows = useMemo(() => buildLayout(GALLERY_IMAGES.length, cols), [cols]);
+  const [bookOpen, setBookOpen] = useState(false);
 
   useEffect(() => {
     const spacer = document.getElementById("scroll-spacer");
@@ -261,11 +263,12 @@ export default function App() {
 
       <WhiteOverlay />
       <Logo vp={vp} />
-      <HeaderNav vp={vp} />
+      <HeaderNav vp={vp} onCatalog={() => setBookOpen(true)} />
       <Caption vp={vp} />
       <ProductInfo vp={vp} />
       <ViewButton vp={vp} />
       <OutroFooter vp={vp} />
+      <Lookbook vp={vp} open={bookOpen} onClose={() => setBookOpen(false)} />
       <CustomCursor enabled={customCursor} />
     </div>
   );
