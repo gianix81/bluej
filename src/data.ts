@@ -20,29 +20,30 @@ export const GALLERY_IMAGES = [
 export const SHOP_URL = "https://bluej.gengioia.it/negozio/";
 export const CART_URL = "https://bluej.gengioia.it/carrello/";
 
-const CATEGORY_BASE = "https://bluej.gengioia.it/categoria-prodotto/";
+// Archivi per marchio del catalogo ufficiale (tag WooCommerce).
+const TAG_BASE = "https://bluej.gengioia.it/tag-prodotto/";
 
-// Le quattro linee della maison, con le rispettive categorie WooCommerce.
+// Le quattro linee della maison, con i rispettivi archivi nel negozio.
 export const BRANDS = [
   {
     name: "Potenza",
     copy: "Made in Italy, taglio sartoriale. La linea premium che dà carattere all'intera collezione.",
-    url: `${CATEGORY_BASE}potenza/`,
+    url: `${TAG_BASE}potenza/`,
   },
   {
     name: "Blue•j",
     copy: "La linea che porta il nome della maison: capi quotidiani, mai banali.",
-    url: `${CATEGORY_BASE}blue-j/`,
+    url: `${TAG_BASE}blue-j/`,
   },
   {
     name: "Anastasia Gray",
     copy: "Il laboratorio dei trend: uscite rapide, spirito giovane, pezzi che non aspettano.",
-    url: `${CATEGORY_BASE}anastasia-gray/`,
+    url: `${TAG_BASE}anastasia-gray/`,
   },
   {
-    name: "Sara Col",
+    name: "Sarah Chole",
     copy: "Gli essenziali morbidi: eleganza senza sforzo, dal giorno alla sera.",
-    url: `${CATEGORY_BASE}sara-col/`,
+    url: `${TAG_BASE}sarah-chole/`,
   },
 ];
 
