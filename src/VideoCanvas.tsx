@@ -20,8 +20,8 @@ export function HeroImage() {
 }
 
 /**
- * Video hero a tutto schermo, mai in autoplay: il currentTime viene
- * guidato dallo scroll (dal RAF in App) tramite l'id "intro-video".
+ * Video hero a tutto schermo in autoplay muto e loop: scorre fluido da
+ * solo; lo scroll si limita a far salire il pannello sopra.
  */
 export function VideoCanvas() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -34,26 +34,25 @@ export function VideoCanvas() {
     return () => clearTimeout(t);
   }, []);
 
-  // Primo tocco: "sblocca" i frame del video su touch (play muto +
-  // pausa), altrimenti il seek non ha nulla da mostrare.
+  // Avvio esplicito (alcuni browser ignorano l'attributo autoplay) e
+  // rispetto della preferenza di riduzione del movimento.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    let primed = false;
-    const prime = () => {
-      if (primed) return;
-      primed = true;
-      video
-        .play()
-        .then(() => {
-          video.pause();
-          video.currentTime = 0;
-        })
-        .catch(() => {});
-      window.removeEventListener("touchstart", prime);
-    };
-    window.addEventListener("touchstart", prime, { passive: true });
-    return () => window.removeEventListener("touchstart", prime);
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduced) return;
+    void video.play().catch(() => {
+      // Se l'autoplay viene bloccato, riprova alla prima interazione.
+      const retry = () => {
+        void video.play().catch(() => {});
+        window.removeEventListener("touchstart", retry);
+        window.removeEventListener("click", retry);
+      };
+      window.addEventListener("touchstart", retry, { passive: true });
+      window.addEventListener("click", retry);
+    });
   }, []);
 
   return (
@@ -69,10 +68,11 @@ export function VideoCanvas() {
       }}
     >
       <video
-        id="intro-video"
         ref={videoRef}
         src={INTRO_VIDEO}
+        autoPlay
         muted
+        loop
         playsInline
         preload="auto"
         onLoadedMetadata={() => setReady(true)}
