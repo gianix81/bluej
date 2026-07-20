@@ -18,6 +18,10 @@ export const GALLERY_IMAGES = [
   "/media/galleria-10.webp",
 ];
 
+// URL del negozio (WooCommerce): quando il negozio e online basta
+// sostituire questo valore, es. "https://shop.blue-j.it".
+export const SHOP_URL = "";
+
 export const CIRCLE_SYMBOLS = ["8", "$", "^^", "%", "/"];
 
 export const CAPTION_TEXT =

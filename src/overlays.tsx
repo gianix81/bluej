@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { CAPTION_TEXT } from "./data";
+import { CAPTION_TEXT, SHOP_URL } from "./data";
 import type { Viewport } from "./useViewport";
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
@@ -145,15 +145,17 @@ export function HeaderNav({ vp }: { vp: Viewport }) {
           <path d="M0 14H40" stroke="#fff" strokeWidth={2.5} />
           <path d="M0 26H40" stroke="#fff" strokeWidth={2.5} />
         </svg>
-        <span
+        <a
+          href={SHOP_URL || undefined}
           style={{
             fontWeight: 500,
             fontSize: vp.isMobile ? 13 : 15,
             color: "#fff",
+            pointerEvents: SHOP_URL ? "auto" : "none",
           }}
         >
           [ CARRELLO ]
-        </span>
+        </a>
       </div>
     </motion.header>
   );
@@ -254,9 +256,10 @@ export function ProductInfo({ vp }: { vp: Viewport }) {
 
 export function ViewButton({ vp }: { vp: Viewport }) {
   return (
-    <div
+    <a
       id="outro-buy"
-      className="pointer-events-none fixed flex items-center justify-center"
+      href={SHOP_URL || undefined}
+      className="fixed flex items-center justify-center"
       style={{
         zIndex: 20,
         mixBlendMode: "exclusion",
@@ -264,6 +267,7 @@ export function ViewButton({ vp }: { vp: Viewport }) {
         borderRadius: 1335,
         transformOrigin: "right bottom",
         transform: "scale(0)",
+        pointerEvents: SHOP_URL ? "auto" : "none",
         ...(vp.isMobile
           ? { left: 16, right: 16, bottom: 60, height: 100 }
           : { right: 32, bottom: 32, width: 330, height: 174 }),
@@ -280,7 +284,7 @@ export function ViewButton({ vp }: { vp: Viewport }) {
       >
         shop
       </span>
-    </div>
+    </a>
   );
 }
 
