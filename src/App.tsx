@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CIRCLE_SYMBOLS, GALLERY_IMAGES } from "./data";
+import { BRANDS, CIRCLE_SYMBOLS, GALLERY_IMAGES } from "./data";
 import { useViewport } from "./useViewport";
 import { VideoCanvas } from "./VideoCanvas";
 import { Lookbook } from "./Lookbook";
@@ -64,7 +64,15 @@ function buildLayout(count: number, cols: number): number[][] {
 export default function App() {
   const vp = useViewport();
   const cols = vp.isMobile ? 2 : vp.isTablet ? 3 : 4;
-  const rows = useMemo(() => buildLayout(GALLERY_IMAGES.length, cols), [cols]);
+  // Ogni cella vuota della griglia "firma" un marchio, a rotazione.
+  const { rows, gapBrand } = useMemo(() => {
+    const rows = buildLayout(GALLERY_IMAGES.length, cols);
+    let g = 0;
+    const gapBrand = rows.map((row) =>
+      row.map((v) => (v === -1 ? g++ % BRANDS.length : -1)),
+    );
+    return { rows, gapBrand };
+  }, [cols]);
   const [bookOpen, setBookOpen] = useState(false);
 
   useEffect(() => {
@@ -234,7 +242,19 @@ export default function App() {
             >
               {row.map((imageIdx, c) =>
                 imageIdx === -1 ? (
-                  <div key={c} style={{ aspectRatio: "2 / 3" }} />
+                  <a
+                    key={c}
+                    href={BRANDS[gapBrand[r][c]].url}
+                    className="brand-cell"
+                    style={{ aspectRatio: "2 / 3" }}
+                  >
+                    <span className="brand-cell-name">
+                      {BRANDS[gapBrand[r][c]].name.toLowerCase()}
+                    </span>
+                    <span className="brand-cell-link">
+                      scopri la collezione →
+                    </span>
+                  </a>
                 ) : (
                   <div
                     key={c}

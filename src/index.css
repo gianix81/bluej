@@ -21,6 +21,39 @@ body {
   }
 }
 
+/* Celle marchio negli spazi neri della galleria */
+.brand-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+}
+
+.brand-cell-name {
+  font-weight: 600;
+  font-size: clamp(20px, 2.6vw, 34px);
+  letter-spacing: -0.04em;
+  line-height: 105%;
+}
+
+.brand-cell-link {
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.brand-cell:hover .brand-cell-link {
+  opacity: 1;
+}
+
 .bp-card {
   will-change: transform;
 }
